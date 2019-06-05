@@ -1,0 +1,18 @@
+{% ckan_extends %}
+
+{% block content_action %}
+  {% if h.check_access('package_update', {'id':pkg.id }) %}
+    {% link_for _('Georeferencing'), controller='ckanext.georeferencing.controller:GeoreferencingController', action='edit_georeferencing', id=pkg.name, class_='btn btn-primary', icon='wrench' %}
+  {% endif %}
+  {{ super() }}
+{% endblock %}
+
+{% block secondary_content %}
+  {{ super() }}
+
+  {% set dataset_extent = h.get_pkg_dict_extra(c.pkg_dict, 'spatial', '') %}
+  {% if dataset_extent %}
+    {% snippet "spatial/snippets/dataset_map_sidebar.html", extent=dataset_extent %}
+  {% endif %}
+
+{% endblock %}
