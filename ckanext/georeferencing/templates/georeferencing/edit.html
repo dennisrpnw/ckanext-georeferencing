@@ -16,18 +16,30 @@
 {% endblock %}
 
 {% block content_primary_nav %}
-  {{ h.build_nav_icon('dataset_read', _('Dataset'), id=pkg.name) }}
-  {{ h.build_nav_icon('dataset_groups', _('Groups'), id=pkg.name) }}
-  {{ h.build_nav_icon('dataset_activity', _('Activity Stream'), id=pkg.name) }}
+  {{ h.build_nav_icon('dataset_read', _('Dummy'), id=pkg.name) }}
+  {{ h.build_nav_icon('dataset_groups', _('Dummy'), id=pkg.name) }}
+  {{ h.build_nav_icon('dataset_activity', _('Dummy'), id=pkg.name) }}
 {% endblock %}
 
 {% block secondary_content %}
+<div id="geo_search">
+    <div class="input-group">
+        <input type="text" id="input_geo_search" class="form-control">
+        <span class="input-group-btn">
+            <button type="button" id="btn_geo_search" class="btn btn-primary">Suchen</button>
+        </span>
+    </div>
+    <ul class ="list-group" id="the_geo_result"></ul>
+    <div class="text-center">
+        <button type="button" id="btn_undo_geo_search" class="btn btn-danger">Zurücksetzen</button>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" />
+<script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script>
 {% endblock %}
