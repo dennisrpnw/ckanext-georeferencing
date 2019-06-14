@@ -3,6 +3,7 @@ from ckan.plugins.toolkit import render, abort
 from ckan.common import c, request, _
 import ckan.model as model
 import ckan.logic as logic
+import ckan.lib.helpers as h
 
 get_action = logic.get_action
 check_access = logic.check_access
@@ -35,3 +36,18 @@ class GeoreferencingController(PackageController):
         except NotAuthorized:
             abort(403, _('User %r not authorized to edit %s') % (c.user, id))
         return render('georeferencing/edit.html', extra_vars={'id': id})
+
+    def save_georeferencing(self, id):
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user, 'auth_user_obj': c.userobj}
+
+        try:
+            c.pkg_dict = get_action('package_show')(context, {'id': id})
+            dataset_type = c.pkg_dict['type'] or 'dataset'
+            h.flash_notice(_('Test'))
+        except NotAuthorized:
+            abort(403, _('Unauthorized to delete package %s') % '')
+        except NotFound:
+            abort(404, _('Dataset not found'))
+
+

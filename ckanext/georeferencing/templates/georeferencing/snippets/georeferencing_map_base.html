@@ -1,0 +1,18 @@
+{#
+Displays a map showing the dataset extent on the dataset page sidebar
+
+extent
+  GeoJSON representation of the geometry to draw (ie the value of the
+  'spatial' extra)
+
+  e.g.
+  {% snippet "spatial/snippets/dataset_map_base.html", extent=extent %}
+
+#}
+
+{% set map_config = h.get_common_map_config() %}
+<div class="georeferencing-map" data-module="georeferencing-map" data-extent="{{ extent }}">
+<div id='map' extent="{{ extent }}"class="map" style="width: 100%; height: 400px;"></div>
+</div>
+
+{% resource 'ckanext-georeferencing/main' %}

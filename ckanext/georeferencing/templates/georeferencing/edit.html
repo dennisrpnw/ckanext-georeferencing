@@ -1,5 +1,6 @@
 {#% extends 'page.html' %#}
 {% extends 'package/base.html' %}
+
 {% block title %}{{ _('Georeferencing') }} - {{ super() }}{% endblock %}
 
 {% block content_action %}
@@ -9,10 +10,24 @@
 {% block primary_content_inner %}
   {% set dataset_extent = h.get_pkg_dict_extra(c.pkg_dict, 'spatial', 'TEST') %}
   {% if dataset_extent %}
-    {% snippet "spatial/snippets/dataset_map.html", extent=dataset_extent %}
+    {% snippet "georeferencing/snippets/georeferencing_map.html", extent=dataset_extent %}
   {% endif %}
+  <button class="btn btn-primary" id="btn_dataset_save">{% block save_button_text %}{{ _('Update') }}{% endblock %}</button>
+{% endblock %}
+
+{% block content_primary_nav %}
+  {{ h.build_nav_icon('dataset_read', _('Dataset'), id=pkg.name) }}
+  {{ h.build_nav_icon('dataset_groups', _('Groups'), id=pkg.name) }}
+  {{ h.build_nav_icon('dataset_activity', _('Activity Stream'), id=pkg.name) }}
 {% endblock %}
 
 {% block secondary_content %}
-  {% snippet 'package/snippets/info.html', pkg=pkg, hide_follow_button=true %}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 {% endblock %}
