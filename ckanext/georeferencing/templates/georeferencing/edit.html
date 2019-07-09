@@ -1,20 +1,4 @@
-{#% extends 'page.html' %#}
-{% extends 'package/base.html' %}
-
-{% block title %}{{ _('Georeferencing') }} - {{ super() }}{% endblock %}
-
-{% block content_action %}
-  {% link_for _('View dataset'), controller='package', action='read', id=pkg.name, class_='btn', icon='eye' %}
-{% endblock %}
-
-{% block primary_content_inner %}
-  {% set dataset_extent = h.get_pkg_dict_extra(c.pkg_dict, 'spatial', 'TEST') %}
-  {% if dataset_extent %}
-    {% snippet "georeferencing/snippets/georeferencing_map.html", extent=dataset_extent %}
-  {% endif %}
-  <button class="btn btn-primary" id="btn_dataset_save">{% block save_button_text %}{{ _('Update') }}{% endblock %}</button>
-{% endblock %}
-
+{% extends 'georeferencing/base.html' %}
 {% block content_primary_nav %}
   {{ h.build_nav_icon('dataset_read', _('Dummy'), id=pkg.name) }}
   {{ h.build_nav_icon('dataset_groups', _('Dummy'), id=pkg.name) }}
@@ -26,7 +10,9 @@
     <div class="input-group">
         <input type="text" id="input_geo_search" class="form-control">
         <span class="input-group-btn">
-            <button type="button" id="btn_geo_search" class="btn btn-primary">Suchen</button>
+            <button type="button" id="btn_geo_search" class="btn btn-primary">
+                <i class="fa fa-search"></i>
+            </button>
         </span>
     </div>
     <ul class ="list-group" id="the_geo_result"></ul>
@@ -34,12 +20,4 @@
         <button type="button" id="btn_undo_geo_search" class="btn btn-danger">Zurücksetzen</button>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" />
-<script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script>
 {% endblock %}

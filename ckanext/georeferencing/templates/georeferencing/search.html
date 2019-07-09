@@ -1,0 +1,68 @@
+{% extends "georeferencing/base.html" %}
+
+{% block subtitle %}{{ _("Georeferencing") }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{{ h.nav_link(_('Georeferencing'), named_route='georeferencing') }}</li>
+{% endblock %}
+
+{% block content_action %}
+{% endblock %}
+
+{% block primary_content_inner %}
+  {% snippet "georeferencing/snippets/georeferencing_map.html" %}
+{% endblock %}
+
+{% block primary_content %}
+  {{ super() }}
+  <section class="module">
+    <div class="module-content">
+      {% block page_primary_action %}
+      {% endblock %}
+      {% block form %}
+      {% endblock %}
+      {% block package_search_results_list %}
+        {{ h.snippet('snippets/package_list.html', packages=c.page.items) }}
+      {% endblock %}
+    </div>
+
+  </section>
+{% endblock %}}
+{% block secondary_content %}
+  <div class="container">
+    {% resource 'ckanext-georeferencing/georeferencing' %}
+    <div class="radio" id="radiogrp">
+      <label class="no-after">
+        <input type="radio" class="radio1" name="relationtype" value="Intersects" checked="checked"/>
+        Intersects
+      </label>
+    </div> 
+    <div class="radio">
+      <label class="no-after">
+        <input type="radio" class="radio1" name="relationtype" value="Within" />  
+        Within
+      </label>
+    </div>
+    <div class="radio" id="radiogrp">
+      <label class="no-after">
+        <input type="radio" class="radio1" name="relationtype" value="Contains"/>
+        Contains
+      </label>
+    </div>
+    <div class="radio">
+      <label class="no-after">
+        <input type="radio" class="radio1" name="relationtype" value="Disjoint" />
+        Disjoint
+      </label>
+    </div>
+    <span class="input-group-btn">
+        <button type="button" id="btn_rel_search" class="btn btn-primary">
+            <i class="fa fa-search"></i>
+        </button>
+    </span>
+    </div>
+    <ul class ="list-group" id="the_dataset_result">
+    </ul>
+  </div>
+{% endblock %}
+

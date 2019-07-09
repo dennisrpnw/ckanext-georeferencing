@@ -20,6 +20,7 @@ class GeoreferencingPlugin(plugins.SingletonPlugin):
 
     def before_map(self, map):
         controller = 'ckanext.georeferencing.controller:GeoreferencingController'
+        map.connect('georeferencing', '/georeferencing', controller=controller, action='view_georeferencing')
         map.connect('georeferencing_edit', '/georeferencing/edit/{id}', controller=controller, action='edit_georeferencing')
         map.connect('georeferencing_save', controller=controller, action='save_georeferencing')
         return map
@@ -27,4 +28,5 @@ class GeoreferencingPlugin(plugins.SingletonPlugin):
     # IAction
 
     def get_actions(self):
-        return {'update_spatial': action.update_spatial}
+        return {'update_spatial': action.update_spatial,
+                'relational_search': action.relational_search}

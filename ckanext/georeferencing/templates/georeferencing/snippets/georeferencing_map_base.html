@@ -11,8 +11,8 @@ extent
 #}
 
 {% set map_config = h.get_common_map_config() %}
-<div class="georeferencing-map" data-module="georeferencing-map" data-extent="{{ extent }}">
-<div id='map' extent="{{ extent }}"class="map" style="width: 100%; height: 400px;"></div>
+<div class="georeferencing-map" data-module="georeferencing-map" data-extent="{{ extent }}" data-name="{{ name }}">
+<div id='map' extent="{{ extent }}" name="{{ name }}" class="map" style="width: 100%; height: 400px;"></div>
 </div>
 
 {% resource 'ckanext-georeferencing/main' %}

@@ -13,6 +13,9 @@ NotAuthorized = logic.NotAuthorized
 
 class GeoreferencingController(PackageController):
 
+    def view_georeferencing(self, data=None, errors=None, error_summary=None):
+        return render('georeferencing/search.html')
+
     def edit_georeferencing(self, id, data=None, errors=None, error_summary=None):
         package_type = self._get_package_type(id)
         context = {'model': model, 'session': model.Session,

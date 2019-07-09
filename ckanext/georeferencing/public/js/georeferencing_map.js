@@ -23,6 +23,7 @@ this.ckan.module('georeferencing-map', function (jQuery, _) {
     initialize: function () {
 
       this.extent = this.el.data('extent');
+      this.name = this.el.data('name');
 
       // fix bbox when w-long is positive while e-long is negative.
       // assuming coordinate sequence is west to east (left to right)
@@ -44,7 +45,7 @@ this.ckan.module('georeferencing-map', function (jQuery, _) {
       };
 
       jQuery.proxyAll(this, /_on/);
-      this.el.ready(load_map(this.extent));
+      this.el.ready(load_map(this.extent, this.name));
 
     },
 }});

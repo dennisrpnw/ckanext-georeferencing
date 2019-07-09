@@ -8,4 +8,7 @@ $( document ).ready(function() {
     $("#btn_undo_geo_search").click(function() {
         removeGeoSelection(true);
     });
+    $("#btn_rel_search").click(function() {
+        relSearch();
+    });
 });

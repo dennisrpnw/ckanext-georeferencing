@@ -6,9 +6,11 @@ var geo_selection;
 var temp_result;
 var old_geo_index;
 var old_dataset_index;
+var dataset_name;
 
-function load_map(extent) {
-    map = L.map('map');
+function load_map(extent, name) {
+    dataset_name = name;
+    map = L.map('map').setView([53.55, 10], 10);
     L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>',
         maxZoom: 18,
@@ -37,32 +39,32 @@ function load_map(extent) {
       // Do whatever else you need to. (save to db, add to map etc)
       drawnItems.addLayer(layer);
     });
-
-    if (extent.type == "MultiPolygon") {
-      var polygons = [];
-      extent.coordinates.forEach(function(coords){
-        var feat = {'type': 'Polygon', 'coordinates': coords};
-        polygons.push(feat);
-      });
-      for (let polygon in polygons) {
-        drawnItems.addLayer(L.geoJson(polygons[polygon]));
+    if (extent != "") {
+      if (extent.type == 'MultiPolygon') {
+        var polygons = [];
+        extent.coordinates.forEach(function(coords){
+          var feat = {'type': 'Polygon', 'coordinates': coords};
+          polygons.push(feat);
+        });
+        for (let polygon in polygons) {
+          drawnItems.addLayer(L.geoJson(polygons[polygon]));
+        };
+      } else {
+        var extentLayer = L.geoJson(extent, {
+          pointToLayer: function (feature, latLng) {
+            return new L.Marker(latLng)
+          }});
+        drawnItems.addLayer(extentLayer);
       };
-    } else {
-      var extentLayer = L.geoJson(extent, {
-        pointToLayer: function (feature, latLng) {
-          return new L.Marker(latLng, {icon: new ckanIcon})
-        }});
-      drawnItems.addLayer(extentLayer);
-    };
-
-    if (extent.type == 'Point'){
-      map.setView(L.latLng(extent.coordinates[1], extent.coordinates[0]), 9);
-    } else {
-      map.fitBounds(drawnItems.getBounds());
+      if (extent.type == 'Point') {
+        map.setView(L.latLng(extent.coordinates[1], extent.coordinates[0]), 9);
+      } else {
+        map.fitBounds(drawnItems.getBounds());
+      }
     }
 };
 
-function datasetSave() {
+function getGeom() {
     var the_geom;
     if (map.pm.findLayers().length == 1) {
         the_geom = map.pm.findLayers()[0].toGeoJSON().geometry;
@@ -75,7 +77,22 @@ function datasetSave() {
     } else {
         the_geom = {};
     };
-    $.getJSON('/api/3/action/update_spatial', {id: 'spatial', spatial: JSON.stringify(the_geom)});
+    return the_geom;
+};
+
+function datasetSave() {
+    var the_geom = getGeom();
+    console.log("spatial length: " + JSON.stringify(the_geom).length);
+    $.ajax({
+      type: 'POST',
+      url: '/api/3/action/update_spatial',
+      data: JSON.stringify({id: dataset_name, spatial: JSON.stringify(the_geom)}),
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      error: function(e) {
+        console.log(e);
+      }
+    });
 };
 
 function geoSearch() {
@@ -140,5 +157,33 @@ function changeResult(e, type) {
     $('.list-group-item.geo').removeClass('active');
     changeGeoJSON(index, "geo");
     sender.classList.add('active');
+};
+
+function relSearch() {
+    if (drawnItems.getLayers().length == 1) {
+        var the_geom = getGeom();
+        $.ajax({
+          type: 'POST',
+          url: '/api/3/action/relational_search',
+          data: JSON.stringify({geometry: JSON.stringify(the_geom), type: $('.radio1:checked').val()}),
+          dataType: 'json',
+          contentType: 'application/json; charset=utf-8',
+          error: function(e) {
+            console.log(e);
+          },
+          success: function(data) {
+            let sHTML = "";
+            var results = data.result.results;
+            for (let i = 0; i < results.length; i++){
+                if (i == 0){
+                    sHTML += "<li><a target=\"_blank\" href=\"/georeferencing/edit/" + results[i].name + "\" id=\"dataset_result" + i + "\" class=\"list-group-item dataset active\">" + results[i].title + "</li>";
+                } else {
+                    sHTML += "<li><a target=\"_blank\" href=\"/georeferencing/edit/" + results[i].name + "\" class=\"list-group-item dataset\">" + results[i].title + "</li>";
+                };
+            };
+            $('#the_dataset_result').html(sHTML);
+          }
+        });
+    };
 };
 
