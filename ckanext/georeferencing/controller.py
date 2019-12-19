@@ -54,3 +54,25 @@ class GeoreferencingController(PackageController):
             abort(404, _('Dataset not found'))
 
 
+    def org_edit_georeferencing(self, id, data=None, errors=None, error_summary=None):
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user, 'auth_user_obj': c.userobj,
+                   'save': 'save' in request.params}
+        try:
+            c.group_dict = get_action('organization_show')(dict(context,
+                                                         for_view=True),
+                                                    {'id': id})
+            context['for_edit'] = True
+            old_data = get_action('organization_show')(context, {'id': id})
+            # old data is from the database and data is passed from the
+            # user if there is a validation error. Use users data if there.
+            if data:
+                old_data.update(data)
+            data = old_data
+        except (NotFound, NotAuthorized):
+            abort(404, _('Organization not found'))
+        try:
+            check_access('organization_update', context)
+        except NotAuthorized:
+            abort(403, _('User %r not authorized to edit %s') % (c.user, id))
+        return render('georeferencing/org_edit.html', extra_vars={'id': id})

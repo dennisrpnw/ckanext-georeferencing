@@ -1,3 +1,4 @@
+# coding: utf8
 import logging
 import ckan.plugins.toolkit as toolkit
 from ckan.common import c
@@ -6,14 +7,33 @@ from ckan.lib.search import PackageSearchQuery
 import shapely
 import shapely.geometry
 import json
+import os
 
 log = logging.getLogger(__name__)
 
 
 @toolkit.side_effect_free
 def update_spatial(context, data_dict):
+    type = data_dict['type']
     id = data_dict['id']
     spatial = data_dict['spatial']
+    if type == 'dataset':
+        update_dataset_spatial(id, spatial)
+    elif type == 'organization':
+        update_organization_spatial(id, spatial)
+
+
+def update_organization_spatial(id, spatial):
+    context = {'model': model, 'session': model.Session,
+                   'user': c.user, 'for_view': True,
+                   'auth_user_obj': c.userobj}
+    datasets = toolkit.get_action('organization_show')(context, {'id': id, 'include_datasets': 'true'})['packages']
+    log.debug('num of datasets: {}'.format(str(len(datasets))))
+    for dataset in datasets:
+        update_dataset_spatial(dataset['id'], spatial)
+
+
+def update_dataset_spatial(id, spatial):
     log.debug('spatial {} | id {}'.format(spatial, id))
     log.debug('user: {} | auth_user_obj: {}'.format(c.user, c.userobj))
     context = {'model': model, 'session': model.Session,
@@ -79,3 +99,19 @@ def relational_search(context, data_dict):
     q = {'fq': fq, 'fl': fl}
     query.run(q)
     return {'count': query.count, 'results': query.results}
+
+
+@toolkit.side_effect_free
+def get_districts(context, data_dict):
+    script_dir = os.path.dirname(__file__)
+    rel_path = "../Stadtteile_Hamburg.geojson"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    log.debug(abs_file_path)
+    result = {'stadtteile': [], 'bezirke': []}
+    with open(abs_file_path) as json_file:
+        data = json.load(json_file)
+        for s in data['features']:
+            result['stadtteile'].append(s['properties']['stadtteil'])
+    for b in ['Hamburg-Mitte', 'Altona', 'Eimsbüttel', 'Hamburg-Nord', 'Wandsbek', 'Bergedorf', 'Harburg']:
+        result['bezirke'].append(b)
+    return result

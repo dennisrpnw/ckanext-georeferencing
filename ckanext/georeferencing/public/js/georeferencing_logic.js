@@ -86,7 +86,22 @@ function datasetSave() {
     $.ajax({
       type: 'POST',
       url: '/api/3/action/update_spatial',
-      data: JSON.stringify({id: dataset_name, spatial: JSON.stringify(the_geom)}),
+      data: JSON.stringify({id: dataset_name, type: 'dataset', spatial: JSON.stringify(the_geom)}),
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      error: function(e) {
+        console.log(e);
+      }
+    });
+};
+
+function orgSave() {
+    var the_geom = getGeom();
+    console.log("spatial length: " + JSON.stringify(the_geom).length);
+    $.ajax({
+      type: 'POST',
+      url: '/api/3/action/update_spatial',
+      data: JSON.stringify({id: dataset_name, type: 'organization', spatial: JSON.stringify(the_geom)}),
       dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       error: function(e) {
@@ -187,3 +202,23 @@ function relSearch() {
     };
 };
 
+function openTab(evt, tabName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+};
