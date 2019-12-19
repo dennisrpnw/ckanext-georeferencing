@@ -1,0 +1,12 @@
+{% ckan_extends %}
+
+{% block content_action %}
+  {% if h.check_access('organization_update', {'id': c.group_dict.id }) %}
+    {% link_for _('Georeferencing'), controller='ckanext.georeferencing.controller:GeoreferencingController', action='org_edit_georeferencing', id=c.group_dict.name, class_='btn btn-primary', icon='wrench' %}
+  {% endif %}
+  {{ super() }}
+{% endblock %}
+
+{% block content_primary_nav %}
+  {{ super() }}
+{% endblock %}
