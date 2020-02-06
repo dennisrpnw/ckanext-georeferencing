@@ -53,7 +53,6 @@ class GeoreferencingController(PackageController):
         except NotFound:
             abort(404, _('Dataset not found'))
 
-
     def org_edit_georeferencing(self, id, data=None, errors=None, error_summary=None):
         context = {'model': model, 'session': model.Session,
                    'user': c.user, 'auth_user_obj': c.userobj,
