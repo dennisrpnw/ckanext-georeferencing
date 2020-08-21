@@ -142,13 +142,13 @@ function geoSearch() {
 };
 
 function changeGeoJSON(index) {
-    removeGeoSelection();
+    removeCurrentLayer();
     drawnItems.addLayer(geo_results[index]);
     map.fitBounds(drawnItems.getBounds());
     old_geo_index = index;
 };
 
-function removeGeoSelection(reset_list = false) {
+function removeCurrentLayer(reset_list = false) {
     if (old_geo_index >= 0) {
         if (drawnItems.hasLayer(geo_results[old_geo_index])) {
             drawnItems.removeLayer(geo_results[old_geo_index]);
@@ -180,7 +180,7 @@ function relSearch() {
         $.ajax({
           type: 'POST',
           url: '/api/3/action/relational_search',
-          data: JSON.stringify({geometry: JSON.stringify(the_geom), type: $('.radio1:checked').val()}),
+          data: JSON.stringify({geometry: JSON.stringify(the_geom), type: $('.radio1:checked').val(), name: $('#btn_rel_search').attr('data1')}),
           dataType: 'json',
           contentType: 'application/json; charset=utf-8',
           error: function(e) {

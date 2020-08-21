@@ -17,6 +17,7 @@ class GeoreferencingController(PackageController):
         name = None
         if data:
             name = data.get('name', None)
+            log.debug("name: %s" % name)
         return render('georeferencing/search.html', extra_vars={'name': name})
 
     def edit_georeferencing(self, id, data=None, errors=None, error_summary=None):

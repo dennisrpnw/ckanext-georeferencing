@@ -59,6 +59,7 @@ def update_dataset_spatial(id, spatial):
 def relational_search(context, data_dict):
     geometry = json.loads(data_dict['geometry'])
     type = data_dict['type']
+    name = data_dict['name']
     invert = ""
 
     if type == "Disjoint":
@@ -94,6 +95,8 @@ def relational_search(context, data_dict):
 
     log.debug('wkt: {}'.format(wkt))
     fq = '{}spatial_geom:\"{}({})\"'.format(invert, type, wkt)
+    if name != "None":
+        fq = fq + " name:\"%s\"" % name
     fl = 'name title data_dict'
     query = PackageSearchQuery()
     q = {'fq': fq, 'fl': fl}

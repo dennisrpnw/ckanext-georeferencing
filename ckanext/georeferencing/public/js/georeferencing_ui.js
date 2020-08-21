@@ -6,7 +6,7 @@ $( document ).ready(function() {
         geoSearch();
     });
     $("#btn_undo_geo_search").click(function() {
-        removeGeoSelection(true);
+        removeCurrentLayer(true);
     });
     $("#btn_rel_search").click(function() {
         relSearch();
@@ -35,8 +35,9 @@ $( document ).ready(function() {
         $("#sel1").html(options);
       }
     });
-    $("#sel1").select2({width: '100%'}).on('select2:select', function (e) {
+    $("#sel1").select2({width: '100%'});
+    $("#sel1").on('select2:select', function (e) {
         var data = e.params.data;
-        console.log(data);
+        console.log("hi" + data);
     });
 });
