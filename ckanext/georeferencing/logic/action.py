@@ -62,7 +62,7 @@ def relational_search(context, data_dict):
     name = data_dict['name']
     invert = ""
 
-    if type == "Disjoint":
+    if type == "Disconnected":
         invert = "-"
         type = "Intersects"
 
